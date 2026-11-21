@@ -1046,7 +1046,7 @@
             </div>
             <div class="btn-row">
               <button class="btn full" id="exportJsonBtn">⬇ JSON 내보내기</button>
-              <div class="btn file-btn full">⬆ JSON 불러오기<input type="file" id="importJsonInput" accept="application/json"></div>
+              <div class="btn file-btn full">⬆ JSON 불러오기<input type="file" id="importJsonInput"></div>
             </div>
             <button class="btn full danger ghost" id="resetBtn">전체 설정 초기화</button>
             <div class="status-line" id="settingsStatus">&nbsp;</div>
@@ -3720,7 +3720,8 @@ function drawSpecRect(x, y, w, h, cover, cw, ch, colorStr, v) {
     const reader = new FileReader();
     reader.onload = ()=>{
       try{
-        const obj = JSON.parse(reader.result);
+        const obj = JSON.parse(String(reader.result).replace(/^\ufeff/,''));
+        if(!obj || typeof obj!=='object' || Array.isArray(obj)) throw new Error('not settings');
         settings = Object.assign(defaultSettings(), obj);
         applyAllSettingsToUI();
         flashStatus($('#settingsStatus'), '가져오기 완료 ✓');
